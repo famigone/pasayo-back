@@ -65,6 +65,17 @@ export const getTrayectos = async (req, res) => {
   }
 };
 
+export const getTiposTrayectos = async (req, res) => {
+  try {
+    const tiposTrayectos = await Trayecto.find({ activo: true });
+
+    // return only _id and titulo from active trayectos
+    res.json(tiposTrayectos.map((trayecto) => ({ _id: trayecto._id, titulo: trayecto.titulo })));
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateTrayecto = async (req, res) => {
   try {
     const { solucion } = req.body;
