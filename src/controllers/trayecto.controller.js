@@ -53,8 +53,9 @@ export const getTrayectos = async (req, res) => {
     let filtroFinal = {};
 
     if (filtro.tema && filtro.tema != 'TODOS') filtroFinal.tema = filtro.tema;
-    if (filtro.user) filtroFinal.user = filtro.user;
-    if (filtro.titulo) filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
+    if (filtro.autor && filtro.autor !== 'TODAS') filtroFinal.autor = filtro.autor;
+    if (filtro.titulo && filtro.titulo !== null)
+      filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
     filtroFinal.activo = true;
 
     const trayectos = await Trayecto.find(filtroFinal).sort({ createdAt: -1 }).limit(limite);
