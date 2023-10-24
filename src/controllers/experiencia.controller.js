@@ -84,7 +84,15 @@ export const getExperiencias = async (req, res) => {
 
     const experiencias = await Experiencia.find(filtroFinal).sort({ createdAt: -1 }).limit(limite);
 
-    res.json(experiencias);
+    const experienciasConTrayectos = await Promise.all(
+      experiencias.map(async (experiencia) => {
+        const trayecto = await Trayecto.find({ _id: experiencia.id_trayecto });
+
+        return { ...experiencia._doc, trayecto };
+      })
+    );
+
+    res.json(experienciasConTrayectos);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
