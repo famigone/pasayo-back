@@ -35,10 +35,7 @@ export const createExperiencia = async (req, res) => {
 
 export const deleteExperiencia = async (req, res) => {
   try {
-    const deletedExperiencia = await Experiencia.findByIdAndDelete(req.params.id, (err, experiencia) => {
-      experiencia.activo = false;
-      experiencia.save();
-    });
+    const deletedExperiencia = await Experiencia.findByIdAndDelete(req.params.id);
 
     if (!deletedExperiencia) return res.status(404).json({ message: 'Experiencia no encontrada' });
 
@@ -76,14 +73,17 @@ export const getExperiencias = async (req, res) => {
     const limite = filtro.limite;
     let filtroFinal = {};
 
+    // Check if filters are present and add them to the query
     if (filtro.tema && filtro.tema != 'TODOS') filtroFinal.tema = filtro.tema;
     if (filtro.autor && filtro.autor !== 'TODAS') filtroFinal.autor = filtro.autor;
     if (filtro.titulo && filtro.titulo !== null)
       filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
     filtroFinal.activo = true;
 
+    // Get the experiences that match the filters
     const experiencias = await Experiencia.find(filtroFinal).sort({ createdAt: -1 }).limit(limite);
 
+    // Get the trayecto for each experience
     const experienciasConTrayectos = await Promise.all(
       experiencias.map(async (experiencia) => {
         const trayecto = await Trayecto.find({ _id: experiencia.id_trayecto });
@@ -100,8 +100,23 @@ export const getExperiencias = async (req, res) => {
 
 export const updateExperiencia = async (req, res) => {
   try {
-    const { solucion } = req.body;
-    const experienciaUpdated = await Experiencia.findOneAndUpdate({ _id: req.params.id }, { solucion });
+    const { titulo, narrativa, objetivo, tema, solucion, activo } = req.body;
+
+    // Create an object containing the fields that we want to update.
+    const updateFields = {};
+    if (titulo) updateFields.titulo = titulo;
+    if (narrativa) updateFields.narrativa = narrativa;
+    if (objetivo) updateFields.objetivo = objetivo;
+    if (tema) updateFields.tema = tema;
+    if (solucion) updateFields.solucion = solucion;
+    if (activo) updateFields.activo = activo;
+
+    // Update the document.
+    const experienciaUpdated = await Experiencia.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: updateFields },
+      { new: true }
+    );
 
     return res.json(experienciaUpdated);
   } catch (error) {
