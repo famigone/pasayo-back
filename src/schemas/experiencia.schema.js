@@ -28,7 +28,4 @@ export const updateExperienciaSchema = z.object({
   id: z.string({
     required_error: 'El ID de la experiencia es requerido',
   }),
-  solucion: z.string({
-    required_error: 'La solución de la experiencia es requerida',
-  }),
 });
