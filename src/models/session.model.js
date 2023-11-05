@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-const sessionCodeSchema = new Schema(
+const sessionSchema = new Schema(
   {
-    experienciaid: {
+    id_experiencia: {
       type: Schema.Types.ObjectId,
       ref: 'experiencia',
     },
@@ -20,7 +20,7 @@ const sessionCodeSchema = new Schema(
       type: String,
       required: false,
     },
-    estadoObservacion: {
+    estado_observacion: {
       type: String,
       required: false,
     },
@@ -28,4 +28,4 @@ const sessionCodeSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model('SessionCode', sessionCodeSchema);
+export default mongoose.model('Session', sessionSchema);
