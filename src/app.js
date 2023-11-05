@@ -6,7 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import trayectoRoutes from './routes/trayecto.routes.js';
 import experienciaRoutes from './routes/experiencia.routes.js';
-import sessionCodeRoutes from './routes/sessionCode.routes.js';
+import sessionRoutes from './routes/session.routes.js';
 import { FRONTEND_URL } from './config.js';
 
 const app = express();
@@ -38,6 +38,6 @@ app.use(cors(corsOptions));
 app.use('/api', authRoutes);
 app.use('/api', trayectoRoutes);
 app.use('/api', experienciaRoutes);
-app.use('/api', sessionCodeRoutes);
+app.use('/api', sessionRoutes);
 
 export default app;
