@@ -1,14 +1,11 @@
 import { z } from 'zod';
 
 export const createSessionSchema = z.object({
-  user: z.string({
-    required_error: 'El usuario de la sesion es requerido',
-  }),
   id_experiencia: z.string({
     required_error: 'El ID de la experiencia de la sesion code es requerido',
   }),
-  codigo: z.string({
-    required_error: 'El código de la sesion code es requerido',
+  user: z.string({
+    required_error: 'El usuario de la sesion es requerido',
   }),
 });
 
