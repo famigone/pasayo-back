@@ -9,7 +9,6 @@ export const createSession = async (req, res) => {
 
     // If an existing session exists, return it
     if (existingSession) {
-      console.log(`existing session ${existingSession}`);
       return res.json(existingSession);
     }
 
