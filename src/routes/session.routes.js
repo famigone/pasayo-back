@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/session', getSessionByUser);
 router.get('/session/:id', getSession);
-router.post('/sessionCode', validateSchema(createSessionSchema), createSession);
-router.put('/sessionCode/:id', validateSchema(updateSessionSchema), updateSession);
+router.post('/session', validateSchema(createSessionSchema), createSession);
+router.put('/session/:id', validateSchema(updateSessionSchema), updateSession);
 
 export default router;
