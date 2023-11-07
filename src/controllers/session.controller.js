@@ -3,10 +3,21 @@ import Session from '../models/session.model.js';
 export const createSession = async (req, res) => {
   try {
     const body = req.body;
-    const newSession = new Session(body);
 
+    // Check if an existing session exists for the user and experiencia
+    const existingSession = await Session.findOne({ user: body.user, id_experiencia: body.id_experiencia });
+
+    // If an existing session exists, return it
+    if (existingSession) {
+      console.log(`existing session ${existingSession}`);
+      return res.json(existingSession);
+    }
+
+    // Otherwise, create a new session document
+    const newSession = new Session(body);
     await newSession.save();
 
+    // Return the new session document
     res.json(newSession);
   } catch (error) {
     return res.status(500).json({ message: error.message });
