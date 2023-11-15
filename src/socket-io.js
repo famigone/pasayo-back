@@ -1,12 +1,12 @@
 import { Server } from 'socket.io';
-import { FRONTEND_URL } from './config.js';
+import { FRONTEND_URL, NODE_ENV } from './config.js';
 
 export const socketIO = async (server) => {
   try {
     const io = new Server(server, {
       cors: {
-        // origin: FRONTEND_URL,
-        origin: '*',
+        origin: NODE_ENV === 'development' ? '*' : FRONTEND_URL,
+        methods: ['GET', 'POST'],
         credentials: true,
       },
     });
@@ -19,9 +19,10 @@ export const socketIO = async (server) => {
       });
 
       // event that captures coding
-      socket.on('user_join_room', ({ session, user }) => {
-        socket.join(session);
-        if (user) socket.broadcast.to(session).emit('user_joined_room', user);
+      socket.on('user_join_room', ({ room, user }) => {
+        console.log('>>> user_join_room', room, user);
+        socket.join(room);
+        if (user) socket.broadcast.to(room).emit('user_joined_room', user);
       });
 
       socket.on('user_coding', function (data) {
