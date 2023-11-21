@@ -10,14 +10,14 @@ export const createSession = async (req, res) => {
     // If an existing session exists, return it
     if (existingSession) {
       return res.json(existingSession);
+    } else {
+      // Otherwise, create a new session document
+      const newSession = new Session(body);
+      await newSession.save();
+
+      // Return the new session document
+      res.json(newSession);
     }
-
-    // Otherwise, create a new session document
-    const newSession = new Session(body);
-    await newSession.save();
-
-    // Return the new session document
-    res.json(newSession);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
