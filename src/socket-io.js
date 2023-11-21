@@ -19,14 +19,15 @@ export const socketIO = async (server) => {
       });
 
       // event that captures coding
-      socket.on('user_join_room', ({ room, user }) => {
-        console.log('>>> user_join_room', room, user);
+      socket.on('user_join_room', ({ room, user }, callback) => {
+        console.log(`>>> User ${user} joined room ${room}`);
         socket.join(room);
+
         if (user) socket.broadcast.to(room).emit('user_joined_room', user);
       });
 
       socket.on('user_coding', function (data) {
-        socket.broadcast.to(data.canal).emit('user_code', data);
+        socket.broadcast.to(data.room).emit('user_code', data);
       });
     });
   } catch (error) {
