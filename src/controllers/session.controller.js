@@ -31,7 +31,7 @@ export const getSession = async (req, res) => {
 
     if (!session) return res.status(404).json({ message: 'Session no encontrada' });
 
-    return res.json(experiencia);
+    return res.json(session);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -44,7 +44,7 @@ export const getSessionByUser = async (req, res) => {
     const session = await Session.findById(req.params.id, filtro);
     if (!session) return res.status(404).json({ message: 'Session no encontrada' });
 
-    return res.json(experiencia);
+    return res.json(session);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
