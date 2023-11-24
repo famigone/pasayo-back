@@ -3,13 +3,14 @@ import Trayecto from '../models/trayecto.model.js';
 
 export const createExperiencia = async (req, res) => {
   try {
-    const { titulo, narrativa, tema, objetivo, solucion, id_trayecto, user } = req.body;
+    const { titulo, narrativa, tema, tipo, objetivo, solucion, id_trayecto, user } = req.body;
 
     const newExperiencia = new Experiencia({
       titulo: titulo.toUpperCase(),
       narrativa,
       objetivo,
       tema,
+      tipo,
       activo: true,
       solucion,
       id_trayecto,
@@ -76,6 +77,7 @@ export const getExperiencias = async (req, res) => {
     // Check if filters are present and add them to the query
     if (filtro.tema && filtro.tema != 'TODOS') filtroFinal.tema = filtro.tema;
     if (filtro.autor && filtro.autor !== 'TODAS') filtroFinal.autor = filtro.autor;
+    if (filtro.tipo && filtro.tipo !== 'TODOS') filtroFinal.tipo = filtro.tipo;
     if (filtro.titulo && filtro.titulo !== null)
       filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
     filtroFinal.activo = true;

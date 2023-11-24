@@ -34,6 +34,10 @@ const experienciaSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    tipo: {
+      type: String,
+      required: false,
+    },
     id_trayecto: {
       type: mongoose.Types.ObjectId,
       ref: 'Trayecto',
