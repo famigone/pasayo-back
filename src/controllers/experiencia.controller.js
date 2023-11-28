@@ -9,8 +9,8 @@ export const createExperiencia = async (req, res) => {
       titulo: titulo.toUpperCase(),
       narrativa,
       objetivo,
-      tema,
-      tipo,
+      tema: tema.toUpperCase(),
+      tipo: tipo.toUpperCase(),
       activo: true,
       solucion,
       id_trayecto,
@@ -106,10 +106,10 @@ export const updateExperiencia = async (req, res) => {
 
     // Create an object containing the fields that we want to update.
     const updateFields = {};
-    if (titulo) updateFields.titulo = titulo;
+    if (titulo) updateFields.titulo = titulo.toUpperCase();
     if (narrativa) updateFields.narrativa = narrativa;
     if (objetivo) updateFields.objetivo = objetivo;
-    if (tema) updateFields.tema = tema;
+    if (tema) updateFields.tema = tema.toUpperCase();
     if (solucion) updateFields.solucion = solucion;
     if (activo) updateFields.activo = activo;
 

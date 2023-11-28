@@ -7,7 +7,7 @@ export const createTrayecto = async (req, res) => {
       titulo: titulo.toUpperCase(),
       narrativa,
       objetivo,
-      tema,
+      tema: tema.toUpperCase(),
       activo: true,
       user,
     });
@@ -79,8 +79,21 @@ export const getTiposTrayectos = async (req, res) => {
 
 export const updateTrayecto = async (req, res) => {
   try {
-    const { solucion } = req.body;
-    const trayectoUpdated = await Trayecto.findOneAndUpdate({ _id: req.params.id }, { solucion });
+    const { titulo, narrativa, objetivo, tema } = req.body;
+
+    // Create an object containing the fields that we want to update.
+    const updateFields = {};
+    if (titulo) updateFields.titulo = titulo.toUpperCase();
+    if (narrativa) updateFields.narrativa = narrativa;
+    if (objetivo) updateFields.objetivo = objetivo;
+    if (tema) updateFields.tema = tema.toUpperCase();
+
+    // Update the document.
+    const trayectoUpdated = await Trayecto.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: updateFields },
+      { new: true }
+    );
 
     return res.json(trayectoUpdated);
   } catch (error) {
