@@ -14,9 +14,7 @@ export const login = async (req, res) => {
         message: ['Credenciales invalidas'],
       });
 
-    // TODO: uncomment this line before production
-    // const isMatch = bcrypt.compareSync(password, userFound.password);
-    const isMatch = bcrypt.compare(password, userFound.password);
+    const isMatch = bcrypt.compareSync(password, userFound.password);
     if (!isMatch) {
       return res.status(400).json({
         message: ['Credenciales invalidas'],
