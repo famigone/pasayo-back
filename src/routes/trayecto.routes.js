@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createTrayecto,
   deleteTrayecto,
+  getTiposTrayectos,
   getTrayecto,
   getTrayectos,
   updateTrayecto,
@@ -14,6 +15,7 @@ const router = Router();
 router.delete('/trayecto/:id', deleteTrayecto);
 router.get('/trayectos', getTrayectos);
 router.get('/trayecto/:id', getTrayecto);
+router.get('/tiposTrayectos', getTiposTrayectos);
 router.post('/trayecto', validateSchema(createTrayectoSchema), createTrayecto);
 router.put('/trayecto', validateSchema(updateTrayectoSchema), updateTrayecto);
 

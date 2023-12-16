@@ -19,6 +19,9 @@ export const createExperienciaSchema = z.object({
   user: z.string({
     required_error: 'El usuario de la experiencia es requerido',
   }),
+  tipo: z.string({
+    required_error: 'El tipo de la experiencia es requerido',
+  }),
   id_trayecto: z.string({
     required_error: 'El ID del trayecto de la experiencia es requerido',
   }),
@@ -27,8 +30,5 @@ export const createExperienciaSchema = z.object({
 export const updateExperienciaSchema = z.object({
   id: z.string({
     required_error: 'El ID de la experiencia es requerido',
-  }),
-  solucion: z.string({
-    required_error: 'La solución de la experiencia es requerida',
   }),
 });

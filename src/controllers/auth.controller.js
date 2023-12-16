@@ -14,8 +14,7 @@ export const login = async (req, res) => {
         message: ['Credenciales invalidas'],
       });
 
-    //TODO: await bcrypt.compare(password, userFound.password);
-    const isMatch = bcrypt.compare(password, userFound.password);
+    const isMatch = bcrypt.compareSync(password, userFound.password);
     if (!isMatch) {
       return res.status(400).json({
         message: ['Credenciales invalidas'],
@@ -37,6 +36,7 @@ export const login = async (req, res) => {
       id: userFound._id,
       username: userFound.username,
       email: userFound.mail,
+      token,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -65,7 +65,7 @@ export const register = async (req, res) => {
       });
 
     // hashing the password
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = bcrypt.hashSync(password, 10);
 
     // creating the user
     const newUser = new User({

@@ -1,16 +1,16 @@
 import Experiencia from '../models/experiencia.model.js';
 import Trayecto from '../models/trayecto.model.js';
-import mongoose from 'mongoose';
 
 export const createExperiencia = async (req, res) => {
   try {
-    const { titulo, narrativa, tema, objetivo, solucion, id_trayecto, user } = req.body;
+    const { titulo, narrativa, tema, tipo, objetivo, solucion, id_trayecto, user } = req.body;
 
     const newExperiencia = new Experiencia({
       titulo: titulo.toUpperCase(),
       narrativa,
       objetivo,
-      tema,
+      tema: tema.toUpperCase(),
+      tipo: tipo.toUpperCase(),
       activo: true,
       solucion,
       id_trayecto,
@@ -19,11 +19,8 @@ export const createExperiencia = async (req, res) => {
 
     let trayecto = await Trayecto.findById(id_trayecto);
 
-    // Convert the req.body._id to an ObjectId
-    const experienciaId = new mongoose.Types.ObjectId(req.body._id);
-
-    // Push the experiencia id into the trayecto.experiencias array
-    trayecto.experiencias.push(experienciaId);
+    // Push the newExperiencia subdocument into the experiencias array
+    trayecto.experiencias.push(newExperiencia);
 
     // Save the trayecto document
     await trayecto.save();
@@ -39,10 +36,7 @@ export const createExperiencia = async (req, res) => {
 
 export const deleteExperiencia = async (req, res) => {
   try {
-    const deletedExperiencia = await Experiencia.findByIdAndDelete(req.params.id, (err, experiencia) => {
-      experiencia.activo = false;
-      experiencia.save();
-    });
+    const deletedExperiencia = await Experiencia.findByIdAndDelete(req.params.id);
 
     if (!deletedExperiencia) return res.status(404).json({ message: 'Experiencia no encontrada' });
 
@@ -80,14 +74,27 @@ export const getExperiencias = async (req, res) => {
     const limite = filtro.limite;
     let filtroFinal = {};
 
+    // Check if filters are present and add them to the query
     if (filtro.tema && filtro.tema != 'TODOS') filtroFinal.tema = filtro.tema;
-    if (filtro.user) filtroFinal.user = filtro.user;
-    if (filtro.titulo) filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
+    if (filtro.autor && filtro.autor !== 'TODAS') filtroFinal.autor = filtro.autor;
+    if (filtro.tipo && filtro.tipo !== 'TODOS') filtroFinal.tipo = filtro.tipo;
+    if (filtro.titulo && filtro.titulo !== null)
+      filtroFinal.titulo = { $regex: '.*' + filtro.titulo.toUpperCase() + '.*' };
     filtroFinal.activo = true;
 
+    // Get the experiences that match the filters
     const experiencias = await Experiencia.find(filtroFinal).sort({ createdAt: -1 }).limit(limite);
 
-    res.json(experiencias);
+    // Get the trayecto for each experience
+    const experienciasConTrayectos = await Promise.all(
+      experiencias.map(async (experiencia) => {
+        const trayecto = await Trayecto.find({ _id: experiencia.id_trayecto });
+
+        return { ...experiencia._doc, trayecto };
+      })
+    );
+
+    res.json(experienciasConTrayectos);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -95,8 +102,23 @@ export const getExperiencias = async (req, res) => {
 
 export const updateExperiencia = async (req, res) => {
   try {
-    const { solucion } = req.body;
-    const experienciaUpdated = await Experiencia.findOneAndUpdate({ _id: req.params.id }, { solucion });
+    const { titulo, narrativa, objetivo, tema, solucion, activo } = req.body;
+
+    // Create an object containing the fields that we want to update.
+    const updateFields = {};
+    if (titulo) updateFields.titulo = titulo.toUpperCase();
+    if (narrativa) updateFields.narrativa = narrativa;
+    if (objetivo) updateFields.objetivo = objetivo;
+    if (tema) updateFields.tema = tema.toUpperCase();
+    if (solucion) updateFields.solucion = solucion;
+    if (activo) updateFields.activo = activo;
+
+    // Update the document.
+    const experienciaUpdated = await Experiencia.findOneAndUpdate(
+      { _id: req.body.id },
+      { $set: updateFields },
+      { new: true }
+    );
 
     return res.json(experienciaUpdated);
   } catch (error) {
